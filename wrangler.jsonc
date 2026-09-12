@@ -1,7 +1,13 @@
 // Created: 2026-09-11 20:35 MST (America/Phoenix)
+// allanhenry.com portfolio. Upload to the repo root as wrangler.jsonc.
+// Points the static-assets Worker at public/ so the deploy uploads the four site
+// files and nothing else (the first deploy, with directory ".", published .git/).
 {
   "name": "allanhenry",
   "compatibility_date": "2026-09-11",
-  "assets": { "directory": "./public", "not_found_handling": "404-page" },
+  "assets": {
+    "directory": "./public",
+    "not_found_handling": "404-page"
+  },
   "workers_dev": true
 }
