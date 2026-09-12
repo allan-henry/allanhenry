@@ -1,5 +1,7 @@
 <!doctype html>
-<!-- Created: 2026-09-11 20:20 MST (America/Phoenix)
+<!-- Created: 2026-09-11 20:45 MST (America/Phoenix). Supersedes the 20:20 copy:
+     per-frame `credit` override and optional `large` width (for frames whose
+     native size is under 2400; never upscale).
      allanhenry.com portfolio: the stage. One frame at a time, full viewport,
      letterboxed on black at native aspect. Arrow keys, click halves, swipe.
      Frame index lives in the URL hash (#7) so a frame is linkable.
@@ -37,6 +39,7 @@ const counter = document.getElementById("counter");
 let i = 0, token = 0;
 
 const srcOf = (f, w) => `${P.base}/${f.file}-${w}.jpg`;
+const largeOf = (f) => f.large || 2400;
 const fromHash = () => {
   const n = Number(location.hash.replace("#", ""));
   return Number.isInteger(n) && n >= 1 && n <= frames.length ? n - 1 : 0;
@@ -53,8 +56,8 @@ function show(n, push = true) {
   img.width = f.w; img.height = f.h;
   img.alt = f.caption || `${P.name}, frame ${i + 1}`;
   img.sizes = "100vw";
-  img.srcset = `${srcOf(f, 1200)} 1200w, ${srcOf(f, 2400)} 2400w`;
-  img.src = srcOf(f, 2400);
+  img.srcset = `${srcOf(f, 1200)} 1200w, ${srcOf(f, largeOf(f))} ${largeOf(f)}w`;
+  img.src = srcOf(f, largeOf(f));
   const done = () => {
     if (mine !== token) return;
     img.classList.add("ready");
@@ -62,17 +65,17 @@ function show(n, push = true) {
     setTimeout(() => { if (mine === token) progress.className = "progress"; }, 300);
   };
   img.complete && img.naturalWidth ? done() : (img.onload = done);
-  img.onerror = () => { if (mine === token) { progress.className = "progress"; cap.textContent = `Could not load ${f.file}-2400.jpg`; } };
+  img.onerror = () => { if (mine === token) { progress.className = "progress"; cap.textContent = `Could not load ${f.file}-${largeOf(f)}.jpg`; } };
 
   cap.textContent = f.caption || "";
-  cred.textContent = P.credit;
+  cred.textContent = f.credit || P.credit;
   counter.textContent = `${i + 1} / ${frames.length}`;
   if (push) history.replaceState(null, "", `#${i + 1}`);
   // warm the neighbours so arrowing feels instant
   for (const k of [i + 1, i - 1]) {
     const g = frames[(k + frames.length) % frames.length];
     const pre = new Image(); pre.sizes = "100vw";
-    pre.srcset = `${srcOf(g, 1200)} 1200w, ${srcOf(g, 2400)} 2400w`; pre.src = srcOf(g, 2400);
+    pre.srcset = `${srcOf(g, 1200)} 1200w, ${srcOf(g, largeOf(g))} ${largeOf(g)}w`; pre.src = srcOf(g, largeOf(g));
   }
   wake();
 }
