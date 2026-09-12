@@ -1,0 +1,77 @@
+/* Created: 2026-09-11 20:20 MST (America/Phoenix)
+   allanhenry.com portfolio. One stylesheet for the stage (index.html) and the
+   about page. Black stage, one system sans, two type sizes, no accent, no
+   decoration. The frame is the only thing on the page with color. */
+
+:root {
+  --stage: #000;
+  --page: #101012;
+  --ink: #e8e8e6;
+  --ink-dim: #8a8a86;
+  --sans: "Helvetica Neue", Helvetica, Arial, system-ui, sans-serif;
+  --chrome: 13px;
+  --fade: 220ms;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0; background: var(--stage); color: var(--ink);
+  font-family: var(--sans); font-size: var(--chrome); line-height: 1.4;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; text-decoration: none; }
+a:focus-visible, button:focus-visible { outline: 1px solid var(--ink); outline-offset: 3px; }
+
+/* ---- stage ---- */
+.stage {
+  position: fixed; inset: 0; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  user-select: none; -webkit-user-select: none; touch-action: pan-y;
+}
+.stage img {
+  display: block; max-width: 100vw; max-height: 100vh; width: auto; height: auto;
+  object-fit: contain; opacity: 0; transition: opacity var(--fade) ease-out;
+}
+.stage img.ready { opacity: 1; }
+/* click zones: left third back, rest forward. Cursor says which. */
+.zone { position: absolute; top: 0; bottom: 0; width: 34%; }
+.zone.prev { left: 0;  cursor: w-resize; }
+.zone.next { right: 0; width: 66%; cursor: e-resize; }
+@media (hover: none) { .zone { cursor: default; } }
+
+/* ---- chrome: fades out when idle ---- */
+.chrome {
+  position: fixed; z-index: 2; padding: 18px 20px; color: var(--ink);
+  transition: opacity var(--fade) ease-out; pointer-events: none;
+}
+.chrome a, .chrome button { pointer-events: auto; }
+.chrome.tl { top: 0; left: 0; }
+.chrome.tr { top: 0; right: 0; }
+.chrome.bl { bottom: 0; left: 0; max-width: min(60vw, 60ch); }
+.chrome.br { bottom: 0; right: 0; font-variant-numeric: tabular-nums; color: var(--ink-dim); }
+.chrome .name { font-weight: 600; letter-spacing: 0.01em; }
+.chrome .caption { color: var(--ink); }
+.chrome .credit { color: var(--ink-dim); margin-top: 2px; }
+body.idle .chrome { opacity: 0; }
+body.idle .stage { cursor: none; }
+
+/* ---- loading: a hairline that fills across the top, not a spinner ---- */
+.progress {
+  position: fixed; top: 0; left: 0; height: 1px; width: 0; background: var(--ink);
+  opacity: 0; transition: width 600ms ease-out, opacity var(--fade);
+  z-index: 3; pointer-events: none;
+}
+.progress.on { opacity: .6; width: 70%; }
+.progress.done { width: 100%; opacity: 0; }
+
+/* ---- about page ---- */
+body.about-page { background: var(--page); font-size: 15px; height: auto; }
+.about-nav { display: flex; justify-content: space-between; padding: 18px 20px; font-size: var(--chrome); }
+.about-nav .name { font-weight: 600; }
+.about { max-width: 60ch; padding: 24px 20px 60px; margin: 0 auto; }
+.about p { margin: 0 0 1.1em; }
+.about .links a { text-decoration: underline; text-underline-offset: 3px; margin-right: 16px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .stage img, .chrome, .progress { transition: none; }
+}
