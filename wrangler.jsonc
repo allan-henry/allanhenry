@@ -1,0 +1,7 @@
+// Created: 2026-09-11 20:35 MST (America/Phoenix)
+{
+  "name": "allanhenry",
+  "compatibility_date": "2026-09-11",
+  "assets": { "directory": "./public", "not_found_handling": "404-page" },
+  "workers_dev": true
+}
